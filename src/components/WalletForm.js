@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-/* import CurrencyOption from './CurrencyOption'; */
 import PropTypes from 'prop-types';
-import requestCurrencies from '../services/currenciesAPI';
+import CurrencyOptionCard from './CurrencyOptionCard';
+import { fetchCurrencies } from '../redux/actions';
 
 class WalletForm extends Component {
   constructor() {
@@ -17,13 +17,8 @@ class WalletForm extends Component {
   }
 
   componentDidMount() {
-    this.getCurrencies();
-  }
-
-  getCurrencies = async () => {
-    const currenciesData = await requestCurrencies();
-    console.log(currenciesData);
-    return currenciesData;
+    const { getCurrenciesDataFromState } = this.props;
+    getCurrenciesDataFromState();
   }
 
   onInputChange = ({ target }) => {
@@ -56,6 +51,14 @@ class WalletForm extends Component {
   }
 
   render() {
+    const { currencies } = this.props;
+    const renderCurrencies = currencies.map((currencyName) => (
+      (<CurrencyOptionCard
+        key={ currencyName }
+        currencyName={ currencyName }
+      />)
+    ));
+
     return (
       <div>
 
@@ -77,11 +80,9 @@ class WalletForm extends Component {
           />
         </label>
 
-        {/* <select data-testid="currency-input">
-          <option value={ CurrencyOption }>
-            { CurrencyOption }
-          </option>
-        </select> */}
+        <select data-testid="currency-input">
+          { renderCurrencies }
+        </select>
 
         <label htmlFor="expensePaymentMethod">
           Paguei de que jeito?
@@ -140,12 +141,19 @@ class WalletForm extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  currencies: state.wallet.currencies,
+});
+
 const mapDispatchToProps = (dispatch) => ({
+  getCurrenciesDataFromState: (payload) => dispatch(fetchCurrencies(payload)),
   saveNewExpenseDispatch: (payload) => dispatch(payload),
 });
 
 WalletForm.propTypes = {
+  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getCurrenciesDataFromState: PropTypes.func.isRequired,
   saveNewExpenseDispatch: PropTypes.func.isRequired,
 };
 
-export default connect(null, mapDispatchToProps)(WalletForm);
+export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);
