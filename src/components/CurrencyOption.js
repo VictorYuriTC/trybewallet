@@ -26,4 +26,4 @@ CurrenciesOptions.propTypes = {
   currencyName: PropTypes.string.isRequired,
 };
 
-export default connect(mapStateToProps)(CurrenciesOptions);
+export default connect(mapStateToProps, null)(CurrenciesOptions);

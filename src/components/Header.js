@@ -13,10 +13,12 @@ class Header extends Component {
           { email }
         </h1>
         <h3 data-testid="total-field">
-          { money }
+          Money, sweat, money:
+          { ` $${money}` }
         </h3>
         <h3 data-testid="header-currency-field">
-          { currency }
+          Moeda corrente:
+          { ` ${currency}` }
         </h3>
       </div>
     );
@@ -31,4 +33,4 @@ Header.propTypes = {
   email: PropTypes.string.isRequired,
 };
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, null)(Header);

@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import CurrencyOption from './CurrencyOption';
+import { connect } from 'react-redux';
+/* import CurrencyOption from './CurrencyOption'; */
+import PropTypes from 'prop-types';
 import requestCurrencies from '../services/currenciesAPI';
 
-export default class WalletForm extends Component {
+class WalletForm extends Component {
   constructor() {
     super();
 
     this.state = {
       expenseAmount: 0,
       expenseDescription: '',
+      expensePaymentMethod: '',
+      expenseReason: '',
     };
   }
 
@@ -34,21 +38,44 @@ export default class WalletForm extends Component {
     if (type === 'checkbox') { this.setState({ [name]: checked }); }
   }
 
+  onClickSaveNewExpense = () => {
+    const { saveNewExpenseDispatch } = this.props;
+    const {
+      expenseAmount,
+      expenseDescription,
+      expensePaymentMethod,
+      expenseReason,
+    } = this.state;
+
+    saveNewExpenseDispatch([
+      expenseAmount,
+      expenseDescription,
+      expensePaymentMethod,
+      expenseReason,
+    ]);
+  }
+
   render() {
     return (
       <div>
 
-        <input
-          name="expenseAmount"
-          data-testid="value-input"
-          onChange={ this.onInputChange }
-        />
+        <label htmlFor="expenseAmount">
+          Perdi quanto?
+          <input
+            name="expenseAmount"
+            data-testid="value-input"
+            onChange={ this.onInputChange }
+          />
+        </label>
 
-        <input
-          name="expenseDescription"
-          data-testid="description-input"
-          onChange={ this.onInputChange }
-        />
+        <label htmlFor="expenseDescription">
+          Gastei com o que?
+          <input
+            name="expenseDescription"
+            data-testid="description-input"
+            onChange={ this.onInputChange }
+          />
+        </label>
 
         {/* <select data-testid="currency-input">
           <option value={ CurrencyOption }>
@@ -56,37 +83,69 @@ export default class WalletForm extends Component {
           </option>
         </select> */}
 
-        <select data-testid="method-input">
-          <option value="cash">
-            Dinheiro
-          </option>
-          <option value="creditCard">
-            Cartão de crédito
-          </option>
-          <option value="debitCard">
-            Cartão de débito
-          </option>
-        </select>
+        <label htmlFor="expensePaymentMethod">
+          Paguei de que jeito?
+          <select
+            data-testid="method-input"
+            name="expensePaymentMethod"
+          >
+            <option value="cash">
+              Dinheiro
+            </option>
+            <option value="creditCard">
+              Cartão de crédito
+            </option>
+            <option value="debitCard">
+              Cartão de débito
+            </option>
+          </select>
+        </label>
 
-        <select data-testid="tag-input">
-          <option value="food">
-            Alimentação
-          </option>
-          <option value="leisure">
-            Lazer
-          </option>
-          <option value="job">
-            Trabalho
-          </option>
-          <option value="transport">
-            Transporte
-          </option>
-          <option value="health">
-            Saúde
-          </option>
-        </select>
+        <label htmlFor="expenseReason">
+          Comprei por quê?
+          <select
+            data-testid="tag-input"
+            name="expenseReason"
+          >
+            <option value="food">
+              Alimentação
+            </option>
+            <option value="leisure">
+              Lazer
+            </option>
+            <option value="job">
+              Trabalho
+            </option>
+            <option value="transport">
+              Transporte
+            </option>
+            <option value="health">
+              Saúde
+            </option>
+          </select>
+        </label>
+
+        <span>
+          Tudo bem, põe na minha conta...
+        </span>
+        <button
+          type="button"
+          name="saveNewExpenseButton"
+        >
+          Adicionar despesa
+        </button>
 
       </div>
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  saveNewExpenseDispatch: (payload) => dispatch(payload),
+});
+
+WalletForm.propTypes = {
+  saveNewExpenseDispatch: PropTypes.func.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(WalletForm);
