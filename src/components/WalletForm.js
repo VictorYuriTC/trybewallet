@@ -72,7 +72,7 @@ class WalletForm extends Component {
         </label>
 
         <label htmlFor="expenseDescription">
-          Gastei com o que?
+          Gastei no que?
           <input
             name="expenseDescription"
             data-testid="description-input"
