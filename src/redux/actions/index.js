@@ -4,6 +4,10 @@ import {
   REQUEST_CURRENCIES,
   RECEIVE_CURRENCIES,
   RECEIVE_CURRENCIES_FAILURE,
+  EXPENSE_PAYLOAD,
+  REQUEST_EXCHANGE_RATES,
+  RECEIVE_EXCHANGE_RATES,
+  RECEIVE_EXCHANGE_RATES_FAILURE,
 } from '../../constants/index';
 import getCurrencies from '../../services/currenciesAPI';
 
@@ -33,6 +37,35 @@ export const fetchCurrencies = () => async (dispatch) => {
     const currenciesAcronyms = Object.keys(currenciesResponse);
     currenciesAcronyms.splice(1, 1); // splice method used to remove USDT currency
     dispatch(receiveCurrencies(currenciesAcronyms));
+  } catch (error) {
+    dispatch(receiveCurrenciesFailure(error));
+  }
+};
+
+export const expensePayloadAction = (payload) => ({
+  type: EXPENSE_PAYLOAD,
+  payload,
+});
+
+export const requestExchangeRates = () => ({
+  type: REQUEST_EXCHANGE_RATES,
+});
+
+export const receiveExchangeRates = (exchangeRates) => ({
+  type: RECEIVE_EXCHANGE_RATES,
+  exchangeRates,
+});
+
+export const receiveExchangeRatesFailure = (error) => ({
+  type: RECEIVE_EXCHANGE_RATES_FAILURE,
+  error,
+});
+
+export const fetchExchangeRates = () => async (dispatch) => {
+  dispatch(requestExchangeRates);
+  try {
+    const currenciesResponse = await getCurrencies();
+    console.log(currenciesResponse);
   } catch (error) {
     dispatch(receiveCurrenciesFailure(error));
   }
