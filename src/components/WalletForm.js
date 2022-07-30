@@ -2,23 +2,33 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CurrencyOptionCard from './CurrencyOptionCard';
-import { fetchCurrencies } from '../redux/actions';
+import {
+  expensePayloadAction,
+  fetchCurrencies,
+  fetchExchangeRates,
+} from '../redux/actions';
 
 class WalletForm extends Component {
   constructor() {
     super();
 
     this.state = {
-      expenseAmount: 0,
-      expenseDescription: '',
-      expensePaymentMethod: '',
-      expenseReason: '',
+      id: 0,
+      value: 0,
+      description: '',
+      currency: '',
+      method: '',
+      tag: '',
     };
   }
 
   componentDidMount() {
-    const { getCurrenciesDataFromState } = this.props;
-    getCurrenciesDataFromState();
+    const {
+      dispatchCurrenciesAcronymsToState,
+      dispatchExchangeRatesToState,
+    } = this.props;
+    dispatchCurrenciesAcronymsToState();
+    dispatchExchangeRatesToState();
   }
 
   onInputChange = ({ target }) => {
@@ -31,23 +41,28 @@ class WalletForm extends Component {
 
     if (type !== 'checkbox') { this.setState({ [name]: value }); }
     if (type === 'checkbox') { this.setState({ [name]: checked }); }
+
+    this.toZeroWhenNegativeNumberOrNaN();
+  }
+
+  toZeroWhenNegativeNumberOrNaN = () => {
+    const { value } = this.state;
+    if (value < 0 || Number.isNaN(parseFloat(value))) { this.setState({ value: 0 }); }
   }
 
   onClickSaveNewExpense = () => {
     const { saveNewExpenseDispatch } = this.props;
-    const {
-      expenseAmount,
-      expenseDescription,
-      expensePaymentMethod,
-      expenseReason,
-    } = this.state;
 
-    saveNewExpenseDispatch([
-      expenseAmount,
-      expenseDescription,
-      expensePaymentMethod,
-      expenseReason,
-    ]);
+    saveNewExpenseDispatch(this.state);
+
+    this.setState((prevState) => ({
+      id: prevState.id + 1,
+      value: 0,
+      description: '',
+      currency: '',
+      method: '',
+      tag: '',
+    }));
   }
 
   render() {
@@ -58,23 +73,32 @@ class WalletForm extends Component {
         currencyName={ currencyName }
       />)
     ));
+    const {
+      value,
+      description,
+      method,
+    } = this.state;
 
     return (
       <div>
 
-        <label htmlFor="expenseAmount">
+        <label htmlFor="value">
           Perdi quanto?
           <input
-            name="expenseAmount"
+            type="number"
+            min="0"
+            name="value"
+            value={ value }
             data-testid="value-input"
             onChange={ this.onInputChange }
           />
         </label>
 
-        <label htmlFor="expenseDescription">
+        <label htmlFor="description">
           Gastei no que?
           <input
-            name="expenseDescription"
+            name="description"
+            value={ description }
             data-testid="description-input"
             onChange={ this.onInputChange }
           />
@@ -84,11 +108,13 @@ class WalletForm extends Component {
           { renderCurrencies }
         </select>
 
-        <label htmlFor="expensePaymentMethod">
+        <label htmlFor="method">
           Paguei de que jeito?
           <select
+            name="method"
+            value={ method }
             data-testid="method-input"
-            name="expensePaymentMethod"
+            onChange={ this.onInputChange }
           >
             <option value="cash">
               Dinheiro
@@ -102,11 +128,11 @@ class WalletForm extends Component {
           </select>
         </label>
 
-        <label htmlFor="expenseReason">
+        <label htmlFor="tag">
           Comprei por quê?
           <select
+            name="tag"
             data-testid="tag-input"
-            name="expenseReason"
           >
             <option value="food">
               Alimentação
@@ -132,6 +158,7 @@ class WalletForm extends Component {
         <button
           type="button"
           name="saveNewExpenseButton"
+          onClick={ this.onClickSaveNewExpense }
         >
           Adicionar despesa
         </button>
@@ -146,13 +173,15 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getCurrenciesDataFromState: (payload) => dispatch(fetchCurrencies(payload)),
-  saveNewExpenseDispatch: (payload) => dispatch(payload),
+  dispatchCurrenciesAcronymsToState: (payload) => dispatch(fetchCurrencies(payload)),
+  dispatchExchangeRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
+  saveNewExpenseDispatch: (payload) => dispatch(expensePayloadAction(payload)),
 });
 
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
-  getCurrenciesDataFromState: PropTypes.func.isRequired,
+  dispatchCurrenciesAcronymsToState: PropTypes.func.isRequired,
+  dispatchExchangeRatesToState: PropTypes.func.isRequired,
   saveNewExpenseDispatch: PropTypes.func.isRequired,
 };
 

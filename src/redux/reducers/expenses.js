@@ -1,65 +1,23 @@
-import {
-  EXPENSE_ID,
-  EXPENSE_VALUE,
-  EXPENSE_DESCRIPTION,
-  EXPENSE_CURRENCY,
-  EXPENSE_METHOD,
-  EXPENSE_TAG,
-  /* EXCHANGE_RATES, */
+/* import {
+  EXPENSE_PAYLOAD,
 } from '../../constants/index';
 
 const INITIAL_STATE = {
-  id: 0,
-  value: '',
-  description: '',
-  currency: '',
-  method: '',
-  tag: '',
-  exchangeRates: {},
+  expenses: [],
 };
 
-const expenses = (state = INITIAL_STATE, action) => {
-  const {
-    type,
-    id,
-    value,
-    description,
-    currency,
-    method,
-    tag,
-    /* exchangeRates, */
-  } = action;
+const expenses = (state = INITIAL_STATE, { type, payload }) => {
+  console.log(payload);
+  let payloadValues;
+  if (payload) {
+    payloadValues = Object.values(payload);
+  }
 
   switch (type) {
-  case EXPENSE_ID:
+  case EXPENSE_PAYLOAD:
     return {
       ...state,
-      id,
-    };
-  case EXPENSE_VALUE:
-    return {
-      ...state,
-      value,
-    };
-  case EXPENSE_DESCRIPTION:
-    return {
-      ...state,
-      description,
-    };
-  case EXPENSE_CURRENCY:
-    return {
-      ...state,
-      currency,
-    };
-  case EXPENSE_METHOD:
-    return {
-      ...state,
-      method,
-    };
-  case EXPENSE_TAG:
-    return {
-      ...state,
-      tag,
+      expenses: [...state.expenses, { ...payload }],
     };
   default:
     return state;
@@ -67,3 +25,4 @@ const expenses = (state = INITIAL_STATE, action) => {
 };
 
 export default expenses;
+ */
