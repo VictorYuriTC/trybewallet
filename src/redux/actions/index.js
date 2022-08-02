@@ -9,6 +9,7 @@ import {
   REQUEST_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES_FAILURE,
+  TOTAL_VALUE_CONVERTED_TO_BRL,
 } from '../../constants/index';
 import getCurrencies from '../../services/currenciesAPI';
 
@@ -76,3 +77,8 @@ export const fetchExchangeRates = () => async (dispatch) => {
     dispatch(receiveCurrenciesFailure(error));
   }
 };
+
+export const getTotalValueConvertedToBRL = (totalValueConvertedToBRL) => ({
+  type: TOTAL_VALUE_CONVERTED_TO_BRL,
+  totalValueConvertedToBRL,
+});

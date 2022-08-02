@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchExchangeRates } from '../redux/actions';
+import { fetchExchangeRates, getTotalValueConvertedToBRL } from '../redux/actions';
 
 class Header extends Component {
   componentDidMount() {
@@ -11,6 +11,7 @@ class Header extends Component {
 
   convertCurrencyToBRL = () => {
     const {
+      dispatchTotalValue,
       expenses,
       exchangeRates,
     } = this.props;
@@ -26,11 +27,15 @@ class Header extends Component {
         }));
     const expensesValuesConvertedToBRL = expensesValueAndCurrencyData
       .map((item) => Number(item.currencyInfo.ask) * Number(item.value));
+    const totalValueInBRL = (expensesValuesConvertedToBRL
+      .reduce((sum, value) => sum + value));
+    dispatchTotalValue(totalValueInBRL);
   }
 
   render() {
     const {
       email,
+      totalValueConvertedToBRL,
     } = this.props;
     const currency = 'BRL';
 
@@ -40,7 +45,7 @@ class Header extends Component {
           { email }
         </h1>
         <h3 data-testid="total-field">
-          { }
+          { totalValueConvertedToBRL }
         </h3>
         <h3 data-testid="header-currency-field">
           Moeda corrente:
@@ -61,10 +66,12 @@ const mapStateToProps = (state) => ({
   email: state.user.email,
   exchangeRates: state.wallet.exchangeRates,
   expenses: state.wallet.expenses,
+  totalValueConvertedToBRL: state.wallet.totalValueConvertedToBRL,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchCurrencyRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
+  dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
 });
 
 Header.propTypes = {

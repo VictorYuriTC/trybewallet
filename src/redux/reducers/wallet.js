@@ -8,6 +8,7 @@ import {
   REQUEST_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES_FAILURE,
+  TOTAL_VALUE_CONVERTED_TO_BRL,
 } from '../../constants/index';
 
 const INITIAL_STATE = {
@@ -15,10 +16,18 @@ const INITIAL_STATE = {
   currencies: [],
   error: '',
   expenses: [],
+  totalValueConvertedToBRL: 0,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
-  const { type, currencies, error, payload, exchangeRates } = action;
+  const {
+    type,
+    currencies,
+    error,
+    payload,
+    exchangeRates,
+    totalValueConvertedToBRL,
+  } = action;
   switch (type) {
   case REQUEST_CURRENCIES || REQUEST_EXCHANGE_RATES:
     return {
@@ -44,6 +53,11 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       exchangeRates,
+    };
+  case TOTAL_VALUE_CONVERTED_TO_BRL:
+    return {
+      ...state,
+      totalValueConvertedToBRL,
     };
   default:
     return state;
