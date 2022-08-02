@@ -71,10 +71,7 @@ export const fetchExchangeRates = () => async (dispatch) => {
   dispatch(requestExchangeRates);
   try {
     const currenciesResponse = await getCurrencies();
-    const allCurrenciesValues = Object.values(currenciesResponse);
-    const allCurrenciesRates = allCurrenciesValues
-      .map((currencyRate) => currencyRate.ask);
-    dispatch(receiveExchangeRates(allCurrenciesRates));
+    dispatch(receiveExchangeRates(currenciesResponse));
   } catch (error) {
     dispatch(receiveCurrenciesFailure(error));
   }
