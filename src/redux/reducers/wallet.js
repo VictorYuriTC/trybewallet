@@ -17,7 +17,8 @@ const INITIAL_STATE = {
   expenses: [],
 };
 
-const wallet = (state = INITIAL_STATE, { type, currencies, error, payload, exchangeRates }) => {
+const wallet = (state = INITIAL_STATE, action) => {
+  const { type, currencies, error, payload, exchangeRates } = action;
   switch (type) {
   case REQUEST_CURRENCIES || REQUEST_EXCHANGE_RATES:
     return {

@@ -11,16 +11,26 @@ class Header extends Component {
 
   convertCurrencyToBRL = () => {
     const {
-      exchangeRates,
       expenses,
+      exchangeRates,
     } = this.props;
-    console.log(expenses);
+
+    const expensesObjectValues = Object.values(exchangeRates);
+    const getSelectedCurrencyData = (selectedCurrency) => expensesObjectValues
+      .find((expense) => expense.code === selectedCurrency);
+    const expensesValueAndCurrencyData = expenses
+      .map(({ currency, value }) => (
+        {
+          currencyInfo: getSelectedCurrencyData(currency),
+          value,
+        }));
+    const expensesValuesConvertedToBRL = expensesValueAndCurrencyData
+      .map((item) => Number(item.currencyInfo.ask) * Number(item.value));
   }
 
   render() {
     const {
       email,
-      expenses,
     } = this.props;
     const currency = 'BRL';
 
@@ -38,6 +48,7 @@ class Header extends Component {
         </h3>
         <button
           onClick={ this.convertCurrencyToBRL }
+          type="button"
         >
           Bla
         </button>
@@ -57,7 +68,9 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 Header.propTypes = {
+  dispatchCurrencyRatesToState: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
+  exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
