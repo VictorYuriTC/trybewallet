@@ -6,6 +6,7 @@ import {
   expensePayloadAction,
   fetchCurrencies,
   fetchExchangeRates,
+  getTotalValueConvertedToBRL,
 } from '../redux/actions';
 
 class WalletForm extends Component {
@@ -50,12 +51,37 @@ class WalletForm extends Component {
     if (value < 0 || Number.isNaN(value)) { this.setState({ value: 0 }); }
   }
 
-  onClickSaveNewExpense = () => {
+  convertCurrencyToBRL = () => {
+    const {
+      dispatchTotalValue,
+      expenses,
+      exchangeRates,
+    } = this.props;
+
+    const expensesObjectValues = Object.values(exchangeRates);
+    const getSelectedCurrencyData = (selectedCurrency) => expensesObjectValues
+      .find(({ code }) => code === selectedCurrency);
+    const expensesValueAndCurrencyData = expenses
+      .map(({ currency, value }) => (
+        {
+          currencyInfo: getSelectedCurrencyData(currency),
+          value,
+        }));
+    const expensesValuesConvertedToBRL = expensesValueAndCurrencyData
+      .map(({ currencyInfo, value }) => Number(currencyInfo.ask) * Number(value));
+    const totalValueInBRL = (expensesValuesConvertedToBRL
+      .reduce((sum, value) => sum + value, 0));
+    dispatchTotalValue(totalValueInBRL);
+    console.log(totalValueInBRL);
+  }
+
+  onClickSaveNewExpense = async () => {
     const {
       dispatchExpenseToState,
     } = this.props;
 
-    dispatchExpenseToState({ ...this.state });
+    await dispatchExpenseToState({ ...this.state });
+    this.convertCurrencyToBRL();
 
     this.setState((prevState) => ({
       id: prevState.id + 1,
@@ -197,13 +223,15 @@ class WalletForm extends Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
-  exchangeRates: state.wallet.currencies,
+  exchangeRates: state.wallet.exchangeRates,
+  expenses: state.wallet.expenses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchCurrenciesAcronymsToState: (payload) => dispatch(fetchCurrencies(payload)),
   dispatchExchangeRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
   dispatchExpenseToState: (payload) => dispatch(expensePayloadAction(payload)),
+  dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
 });
 
 WalletForm.propTypes = {
@@ -211,7 +239,9 @@ WalletForm.propTypes = {
   dispatchCurrenciesAcronymsToState: PropTypes.func.isRequired,
   dispatchExchangeRatesToState: PropTypes.func.isRequired,
   dispatchExpenseToState: PropTypes.func.isRequired,
-  exchangeRates: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dispatchTotalValue: PropTypes.func.isRequired,
+  exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
+  expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);
