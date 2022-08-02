@@ -4,11 +4,6 @@ import PropTypes from 'prop-types';
 import { fetchExchangeRates } from '../redux/actions';
 
 class Header extends Component {
-  componentDidMount() {
-    const { dispatchCurrencyRatesToState } = this.props;
-    dispatchCurrencyRatesToState();
-  }
-
   render() {
     const {
       email,
@@ -47,7 +42,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 Header.propTypes = {
-  dispatchCurrencyRatesToState: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
   totalValueConvertedToBRL: PropTypes.number.isRequired,
 };

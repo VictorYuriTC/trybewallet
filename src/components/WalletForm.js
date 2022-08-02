@@ -5,9 +5,9 @@ import CurrencyOptionCard from './CurrencyOptionCard';
 import {
   expensePayloadAction,
   fetchCurrencies,
-  fetchExchangeRates,
   getTotalValueConvertedToBRL,
 } from '../redux/actions';
+import getCurrencies from '../services/currenciesAPI';
 
 class WalletForm extends Component {
   constructor() {
@@ -26,10 +26,8 @@ class WalletForm extends Component {
   componentDidMount() {
     const {
       dispatchCurrenciesAcronymsToState,
-      dispatchExchangeRatesToState,
     } = this.props;
     dispatchCurrenciesAcronymsToState();
-    dispatchExchangeRatesToState();
   }
 
   onInputChange = ({ target }) => {
@@ -55,11 +53,10 @@ class WalletForm extends Component {
     const {
       dispatchTotalValue,
       expenses,
-      exchangeRates,
     } = this.props;
-
-    const expensesObjectValues = Object.values(exchangeRates);
+    const expensesObjectValues = Object.values(expenses[0].exchangeRates);
     const getSelectedCurrencyData = (selectedCurrency) => expensesObjectValues
+      .filter((currency) => currency)
       .find(({ code }) => code === selectedCurrency);
     const expensesValueAndCurrencyData = expenses
       .map(({ currency, value }) => (
@@ -72,7 +69,6 @@ class WalletForm extends Component {
     const totalValueInBRL = (expensesValuesConvertedToBRL
       .reduce((sum, value) => sum + value, 0));
     dispatchTotalValue(totalValueInBRL);
-    console.log(totalValueInBRL);
   }
 
   onClickSaveNewExpense = async () => {
@@ -80,8 +76,13 @@ class WalletForm extends Component {
       dispatchExpenseToState,
     } = this.props;
 
-    await dispatchExpenseToState({ ...this.state });
-    this.convertCurrencyToBRL();
+    const getCurrenciesFromAPI = await getCurrencies();
+    const exchangeRatesWithoutUSDT = Object.entries(getCurrenciesFromAPI)
+      .filter((rate) => !rate.includes('USDT'));
+    /* exchangeRates.USDT = undefined; */
+    const exchangeRates = Object.fromEntries(exchangeRatesWithoutUSDT);
+
+    await dispatchExpenseToState({ ...this.state, exchangeRates });
 
     this.setState((prevState) => ({
       id: prevState.id + 1,
@@ -91,6 +92,8 @@ class WalletForm extends Component {
       method: '',
       tag: '',
     }));
+
+    this.convertCurrencyToBRL();
   }
 
   render() {
@@ -229,7 +232,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchCurrenciesAcronymsToState: (payload) => dispatch(fetchCurrencies(payload)),
-  dispatchExchangeRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
   dispatchExpenseToState: (payload) => dispatch(expensePayloadAction(payload)),
   dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
 });
@@ -237,7 +239,6 @@ const mapDispatchToProps = (dispatch) => ({
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispatchCurrenciesAcronymsToState: PropTypes.func.isRequired,
-  dispatchExchangeRatesToState: PropTypes.func.isRequired,
   dispatchExpenseToState: PropTypes.func.isRequired,
   dispatchTotalValue: PropTypes.func.isRequired,
   exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
