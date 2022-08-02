@@ -5,6 +5,9 @@ import {
   RECEIVE_CURRENCIES,
   RECEIVE_CURRENCIES_FAILURE,
   EXPENSE_PAYLOAD,
+  REQUEST_EXCHANGE_RATES,
+  RECEIVE_EXCHANGE_RATES,
+  RECEIVE_EXCHANGE_RATES_FAILURE,
 } from '../../constants/index';
 
 const INITIAL_STATE = {
@@ -14,9 +17,9 @@ const INITIAL_STATE = {
   expenses: [],
 };
 
-const wallet = (state = INITIAL_STATE, { type, currencies, error, payload }) => {
+const wallet = (state = INITIAL_STATE, { type, currencies, error, payload, exchangeRates }) => {
   switch (type) {
-  case REQUEST_CURRENCIES:
+  case REQUEST_CURRENCIES || REQUEST_EXCHANGE_RATES:
     return {
       ...state,
       isLoading: !state.isLoading,
@@ -26,7 +29,7 @@ const wallet = (state = INITIAL_STATE, { type, currencies, error, payload }) => 
       ...state,
       currencies,
     };
-  case RECEIVE_CURRENCIES_FAILURE:
+  case RECEIVE_CURRENCIES_FAILURE || RECEIVE_EXCHANGE_RATES_FAILURE:
     return {
       ...state,
       error,
@@ -35,6 +38,11 @@ const wallet = (state = INITIAL_STATE, { type, currencies, error, payload }) => 
     return {
       ...state,
       expenses: [...state.expenses, { ...payload }],
+    };
+  case RECEIVE_EXCHANGE_RATES:
+    return {
+      ...state,
+      exchangeRates,
     };
   default:
     return state;

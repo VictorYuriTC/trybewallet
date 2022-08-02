@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { fetchExchangeRates } from '../redux/actions';
 
 class Header extends Component {
+  componentDidMount() {
+    const { dispatchCurrencyRatesToState } = this.props;
+    dispatchCurrencyRatesToState();
+  }
+
+  convertCurrencyToBRL = () => {
+    const {
+      exchangeRates,
+      expenses,
+    } = this.props;
+    console.log(expenses);
+  }
+
   render() {
     const {
       email,
       expenses,
     } = this.props;
     const currency = 'BRL';
-    console.log(expenses);
-
-    const renderSpentMoneySum = expenses
-      .reduce((acc, { value }) => parseFloat(acc) + parseFloat(value), 0);
 
     return (
       <div>
@@ -20,12 +30,17 @@ class Header extends Component {
           { email }
         </h1>
         <h3 data-testid="total-field">
-          { renderSpentMoneySum }
+          { }
         </h3>
         <h3 data-testid="header-currency-field">
           Moeda corrente:
           { ` ${currency}` }
         </h3>
+        <button
+          onClick={ this.convertCurrencyToBRL }
+        >
+          Bla
+        </button>
       </div>
     );
   }
@@ -33,7 +48,12 @@ class Header extends Component {
 
 const mapStateToProps = (state) => ({
   email: state.user.email,
+  exchangeRates: state.wallet.exchangeRates,
   expenses: state.wallet.expenses,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  dispatchCurrencyRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
 });
 
 Header.propTypes = {
@@ -41,4 +61,4 @@ Header.propTypes = {
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default connect(mapStateToProps, null)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

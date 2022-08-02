@@ -5,6 +5,7 @@ import {
   RECEIVE_CURRENCIES,
   RECEIVE_CURRENCIES_FAILURE,
   EXPENSE_PAYLOAD,
+  RECEIVE_SELECTED_CURRENCY_NAME,
   REQUEST_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES_FAILURE,
@@ -42,6 +43,11 @@ export const fetchCurrencies = () => async (dispatch) => {
   }
 };
 
+export const receiveCurrencyName = (currencyName) => ({
+  type: RECEIVE_SELECTED_CURRENCY_NAME,
+  currencyName,
+});
+
 export const expensePayloadAction = (payload) => ({
   type: EXPENSE_PAYLOAD,
   payload,
@@ -65,7 +71,10 @@ export const fetchExchangeRates = () => async (dispatch) => {
   dispatch(requestExchangeRates);
   try {
     const currenciesResponse = await getCurrencies();
-    console.log(currenciesResponse);
+    const allCurrenciesValues = Object.values(currenciesResponse);
+    const allCurrenciesRates = allCurrenciesValues
+      .map((currencyRate) => currencyRate.ask);
+    dispatch(receiveExchangeRates(allCurrenciesRates));
   } catch (error) {
     dispatch(receiveCurrenciesFailure(error));
   }

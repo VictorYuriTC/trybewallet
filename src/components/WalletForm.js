@@ -74,9 +74,11 @@ class WalletForm extends Component {
       />)
     ));
     const {
-      value,
+      currency,
       description,
       method,
+      tag,
+      value,
     } = this.state;
 
     return (
@@ -104,7 +106,12 @@ class WalletForm extends Component {
           />
         </label>
 
-        <select data-testid="currency-input">
+        <select
+          data-testid="currency-input"
+          name="currency"
+          value={ currency }
+          onChange={ this.onInputChange }
+        >
           { renderCurrencies }
         </select>
 
@@ -116,7 +123,7 @@ class WalletForm extends Component {
             data-testid="method-input"
             onChange={ this.onInputChange }
           >
-            <option value="cash">
+            <option value="cash" selected>
               Dinheiro
             </option>
             <option value="creditCard">
@@ -132,7 +139,9 @@ class WalletForm extends Component {
           Comprei por quê?
           <select
             name="tag"
+            value={ tag }
             data-testid="tag-input"
+            onChange={ this.onInputChange }
           >
             <option value="food">
               Alimentação
