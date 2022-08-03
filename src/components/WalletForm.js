@@ -8,6 +8,7 @@ import {
   getTotalValueConvertedToBRL,
 } from '../redux/actions';
 import getCurrencies from '../services/currenciesAPI';
+import { ALIMENTAÇÃO, DINHEIRO, USD } from '../constants';
 
 class WalletForm extends Component {
   constructor() {
@@ -17,9 +18,9 @@ class WalletForm extends Component {
       id: 0,
       value: '',
       description: '',
-      currency: '',
-      method: '',
-      tag: '',
+      currency: USD,
+      method: DINHEIRO,
+      tag: ALIMENTAÇÃO,
     };
   }
 
@@ -77,9 +78,9 @@ class WalletForm extends Component {
     } = this.props;
 
     const getCurrenciesFromAPI = await getCurrencies();
-    const exchangeRatesWithoutUSDT = Object.entries(getCurrenciesFromAPI)
-      .filter((rate) => !rate.includes('USDT'));
-    /* exchangeRates.USDT = undefined; */
+    const exchangeRatesWithoutUSDT = Object.entries(getCurrenciesFromAPI);
+    /* .filter((rate) => !rate.includes('USDT'));
+    exchangeRates.USDT = undefined; */
     const exchangeRates = Object.fromEntries(exchangeRatesWithoutUSDT);
 
     await dispatchExpenseToState({ ...this.state, exchangeRates });
@@ -88,9 +89,9 @@ class WalletForm extends Component {
       id: prevState.id + 1,
       value: '',
       description: '',
-      currency: '',
-      method: '',
-      tag: '',
+      currency: USD,
+      method: DINHEIRO,
+      tag: ALIMENTAÇÃO,
     }));
 
     this.convertCurrencyToBRL();
@@ -149,9 +150,6 @@ class WalletForm extends Component {
             value={ currency }
             onChange={ this.onInputChange }
           >
-            <option>
-              Moeda corrente
-            </option>
             { renderCurrencies }
           </select>
         </label>
@@ -164,16 +162,13 @@ class WalletForm extends Component {
             data-testid="method-input"
             onChange={ this.onInputChange }
           >
-            <option>
-              Método de pagamento
-            </option>
-            <option value="cash">
+            <option value="Dinheiro">
               Dinheiro
             </option>
-            <option value="creditCard">
+            <option value="Cartão de crédito">
               Cartão de crédito
             </option>
-            <option value="debitCard">
+            <option value="Cartão de débito">
               Cartão de débito
             </option>
           </select>
@@ -187,22 +182,19 @@ class WalletForm extends Component {
             data-testid="tag-input"
             onChange={ this.onInputChange }
           >
-            <option>
-              Razão da compra
-            </option>
-            <option value="food">
+            <option value="Alimentação">
               Alimentação
             </option>
-            <option value="leisure">
+            <option value="Lazer">
               Lazer
             </option>
-            <option value="job">
+            <option value="Trabalho">
               Trabalho
             </option>
-            <option value="transport">
+            <option value="Transporte">
               Transporte
             </option>
-            <option value="health">
+            <option value="Saúde">
               Saúde
             </option>
           </select>
