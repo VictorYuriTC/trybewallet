@@ -76,15 +76,12 @@ class WalletForm extends Component {
     const {
       dispatchExpenseToState,
     } = this.props;
-
     const getCurrenciesFromAPI = await getCurrencies();
     const exchangeRatesWithoutUSDT = Object.entries(getCurrenciesFromAPI);
     /* .filter((rate) => !rate.includes('USDT'));
     exchangeRates.USDT = undefined; */
     const exchangeRates = Object.fromEntries(exchangeRatesWithoutUSDT);
-
     await dispatchExpenseToState({ ...this.state, exchangeRates });
-
     this.setState((prevState) => ({
       id: prevState.id + 1,
       value: '',
@@ -93,7 +90,6 @@ class WalletForm extends Component {
       method: DINHEIRO,
       tag: ALIMENTAÇÃO,
     }));
-
     this.convertCurrencyToBRL();
   }
 
