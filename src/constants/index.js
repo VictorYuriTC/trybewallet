@@ -16,3 +16,8 @@ export const TOTAL_VALUE_CONVERTED_TO_BRL = 'TOTAL_VALUE_CONVERTED_TO_BRL';
 export const ALIMENTAÇÃO = 'ALIMENTAÇÃO';
 export const DINHEIRO = 'DINHEIRO';
 export const USD = 'USD';
+
+export const getSelectedCurrencyData = (expenses, selectedCurrency) => Object
+  .values(expenses[0].exchangeRates)
+  .filter((currency) => currency)
+  .find(({ code }) => code === selectedCurrency);

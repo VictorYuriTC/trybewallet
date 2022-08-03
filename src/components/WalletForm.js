@@ -5,10 +5,10 @@ import CurrencyOptionCard from './CurrencyOptionCard';
 import {
   expensePayloadAction,
   fetchCurrencies,
+  fetchExchangeRates,
   getTotalValueConvertedToBRL,
 } from '../redux/actions';
-import getCurrencies from '../services/currenciesAPI';
-import { ALIMENTAÇÃO, DINHEIRO, USD } from '../constants';
+import { ALIMENTAÇÃO, DINHEIRO, USD, getSelectedCurrencyData } from '../constants';
 
 class WalletForm extends Component {
   constructor() {
@@ -55,14 +55,10 @@ class WalletForm extends Component {
       dispatchTotalValue,
       expenses,
     } = this.props;
-    const expensesObjectValues = Object.values(expenses[0].exchangeRates);
-    const getSelectedCurrencyData = (selectedCurrency) => expensesObjectValues
-      .filter((currency) => currency)
-      .find(({ code }) => code === selectedCurrency);
     const expensesValueAndCurrencyData = expenses
       .map(({ currency, value }) => (
         {
-          currencyInfo: getSelectedCurrencyData(currency),
+          currencyInfo: getSelectedCurrencyData(expenses, currency),
           value,
         }));
     const expensesValuesConvertedToBRL = expensesValueAndCurrencyData
@@ -74,13 +70,16 @@ class WalletForm extends Component {
 
   onClickSaveNewExpense = async () => {
     const {
+      dispatchExchangeRatesToState,
       dispatchExpenseToState,
     } = this.props;
-    const getCurrenciesFromAPI = await getCurrencies();
+    await dispatchExchangeRatesToState();
+    /* const getCurrenciesFromAPI = await getCurrencies();
     const exchangeRatesWithoutUSDT = Object.entries(getCurrenciesFromAPI);
-    /* .filter((rate) => !rate.includes('USDT'));
-    exchangeRates.USDT = undefined; */
-    const exchangeRates = Object.fromEntries(exchangeRatesWithoutUSDT);
+    .filter((rate) => !rate.includes('USDT'));
+    exchangeRates.USDT = undefined;
+    const exchangeRates = Object.fromEntries(exchangeRatesWithoutUSDT); */
+    const { exchangeRates } = this.props;
     await dispatchExpenseToState({ ...this.state, exchangeRates });
     this.setState((prevState) => ({
       id: prevState.id + 1,
@@ -220,6 +219,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchCurrenciesAcronymsToState: (payload) => dispatch(fetchCurrencies(payload)),
+  dispatchExchangeRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
   dispatchExpenseToState: (payload) => dispatch(expensePayloadAction(payload)),
   dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
 });
@@ -227,6 +227,7 @@ const mapDispatchToProps = (dispatch) => ({
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispatchCurrenciesAcronymsToState: PropTypes.func.isRequired,
+  dispatchExchangeRatesToState: PropTypes.func.isRequired,
   dispatchExpenseToState: PropTypes.func.isRequired,
   dispatchTotalValue: PropTypes.func.isRequired,
   exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
