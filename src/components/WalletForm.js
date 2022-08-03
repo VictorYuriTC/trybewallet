@@ -8,7 +8,12 @@ import {
   fetchExchangeRates,
   getTotalValueConvertedToBRL,
 } from '../redux/actions';
-import { ALIMENTAÇÃO, DINHEIRO, USD, getSelectedCurrencyData } from '../constants';
+import {
+  ALIMENTAÇÃO,
+  DINHEIRO,
+  USD,
+  expensesValueAndCurrencyData,
+} from '../constants';
 
 class WalletForm extends Component {
   constructor() {
@@ -55,13 +60,8 @@ class WalletForm extends Component {
       dispatchTotalValue,
       expenses,
     } = this.props;
-    const expensesValueAndCurrencyData = expenses
-      .map(({ currency, value }) => (
-        {
-          currencyInfo: getSelectedCurrencyData(expenses, currency),
-          value,
-        }));
-    const expensesValuesConvertedToBRL = expensesValueAndCurrencyData
+
+    const expensesValuesConvertedToBRL = expensesValueAndCurrencyData(expenses)
       .map(({ currencyInfo, value }) => Number(currencyInfo.ask) * Number(value));
     const totalValueInBRL = (expensesValuesConvertedToBRL
       .reduce((sum, value) => sum + value, 0));
@@ -118,6 +118,7 @@ class WalletForm extends Component {
         <label htmlFor="value">
           Perdi quanto?
           <input
+            placeholder="Valor"
             type="number"
             min="0"
             name="value"
@@ -128,8 +129,9 @@ class WalletForm extends Component {
         </label>
 
         <label htmlFor="description">
-          Gastei no que?
+          Gastei no quê?
           <input
+            placeholder="Produto/serviço/outro"
             name="description"
             value={ description }
             data-testid="description-input"
@@ -138,7 +140,7 @@ class WalletForm extends Component {
         </label>
 
         <label htmlFor="currency">
-          Moeda de onde?
+          Com qual dinheiro?
           <select
             data-testid="currency-input"
             name="currency"
