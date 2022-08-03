@@ -9,6 +9,7 @@ import {
   RECEIVE_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES_FAILURE,
   TOTAL_VALUE_CONVERTED_TO_BRL,
+  REMOVE_EXPENSE_FROM_STATE,
 } from '../../constants/index';
 
 const INITIAL_STATE = {
@@ -27,7 +28,9 @@ const wallet = (state = INITIAL_STATE, action) => {
     payload,
     exchangeRates,
     totalValueConvertedToBRL,
+    id,
   } = action;
+
   switch (type) {
   case REQUEST_CURRENCIES || REQUEST_EXCHANGE_RATES:
     return {
@@ -58,6 +61,11 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       totalValueConvertedToBRL,
+    };
+  case REMOVE_EXPENSE_FROM_STATE:
+    return {
+      ...state,
+      expenses: [...state.expenses].filter((expense) => expense.id !== id),
     };
   default:
     return state;

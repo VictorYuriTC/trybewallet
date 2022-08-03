@@ -9,7 +9,7 @@ class Table extends Component {
 
     const renderTableRowCard = expenses.map((expense) => (
       <ExpenseTableRowCard
-        key={ expense }
+        key={ expense.id }
         expense={ expense }
       />
     ));

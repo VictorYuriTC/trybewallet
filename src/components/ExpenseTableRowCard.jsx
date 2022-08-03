@@ -1,8 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getTotalValueConvertedToBRL, removeExpenseFromState } from '../redux/actions';
 
 class TableRowCard extends Component {
+  // Source: https://thewebdev.info/2022/04/30/how-to-delete-an-item-using-redux-and-javascript/
+  onClickDeleteExpense = async () => {
+    const {
+      dispatchRemovedIdToState,
+      dispatchTotalValue,
+      expense,
+      totalValueConvertedToBRL,
+    } = this.props;
+
+    const {
+      id,
+      value,
+      currency,
+      exchangeRates,
+    } = expense;
+
+    const currencyData = await Object.values(exchangeRates)
+      .find(({ code }) => code === currency);
+
+    const { ask } = currencyData;
+
+    const valueConvertedToBRL = (Number(ask) * Number(value)).toFixed(2);
+    const valueAfterDeletion = Number(totalValueConvertedToBRL) - valueConvertedToBRL;
+
+    dispatchRemovedIdToState(id);
+    dispatchTotalValue(valueAfterDeletion);
+  }
+
   render() {
     const { expense } = this.props;
 
@@ -54,6 +83,15 @@ class TableRowCard extends Component {
         <td>
           Real
         </td>
+        <td>
+          <button
+            data-testid="delete-btn"
+            type="button"
+            onClick={ this.onClickDeleteExpense }
+          >
+            Excluir
+          </button>
+        </td>
       </tr>
     );
   }
@@ -61,10 +99,19 @@ class TableRowCard extends Component {
 
 const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
+  totalValueConvertedToBRL: state.wallet.totalValueConvertedToBRL,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  dispatchRemovedIdToState: (payload) => dispatch(removeExpenseFromState(payload)),
+  dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
 });
 
 TableRowCard.propTypes = {
+  dispatchRemovedIdToState: PropTypes.func.isRequired,
+  dispatchTotalValue: PropTypes.func.isRequired,
   expense: PropTypes.objectOf(PropTypes.string).isRequired,
+  totalValueConvertedToBRL: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, null)(TableRowCard);
+export default connect(mapStateToProps, mapDispatchToProps)(TableRowCard);

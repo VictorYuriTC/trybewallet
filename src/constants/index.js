@@ -27,3 +27,5 @@ export const expensesValueAndCurrencyData = (expenses) => expenses
       currencyInfo: getSelectedCurrencyData(expenses, currency),
       value,
     }));
+
+export const REMOVE_EXPENSE_FROM_STATE = 'REMOVE_EXPENSE_FROM_STATE';
