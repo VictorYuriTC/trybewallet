@@ -13,6 +13,7 @@ class Table extends Component {
         expense={ expense }
       />
     ));
+
     return (
       <div>
         <table>
