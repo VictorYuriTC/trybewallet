@@ -1,9 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getTotalValueConvertedToBRL, removeExpenseFromState } from '../redux/actions';
+import {
+  isEditing,
+  getTotalValueConvertedToBRL,
+  removeExpenseFromState,
+} from '../redux/actions';
 
 class TableRowCard extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      isExpenseBeingEdited: true,
+    };
+  }
+
   // Source: https://thewebdev.info/2022/04/30/how-to-delete-an-item-using-redux-and-javascript/
   onClickDeleteExpense = async () => {
     const {
@@ -30,6 +42,25 @@ class TableRowCard extends Component {
 
     dispatchRemovedIdToState(id);
     dispatchTotalValue(valueAfterDeletion);
+  }
+
+  onClickEditExpense = () => {
+    const {
+      dispatchIsExpenseBeingEdited,
+      expense,
+      expenses,
+    } = this.props;
+
+    const { isExpenseBeingEdited } = this.state;
+
+    const { id } = expense;
+    console.log(expenses.find((eachExpense) => eachExpense.id === id));
+
+    dispatchIsExpenseBeingEdited(isExpenseBeingEdited);
+
+    this.setState({
+      isExpenseBeingEdited: !isExpenseBeingEdited,
+    });
   }
 
   render() {
@@ -91,6 +122,13 @@ class TableRowCard extends Component {
           >
             Excluir
           </button>
+          <button
+            data-testid="edit-btn"
+            type="button"
+            onClick={ this.onClickEditExpense }
+          >
+            Editar despesa
+          </button>
         </td>
       </tr>
     );
@@ -103,14 +141,17 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  dispatchIsExpenseBeingEdited: (payload) => dispatch(isEditing(payload)),
   dispatchRemovedIdToState: (payload) => dispatch(removeExpenseFromState(payload)),
   dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
 });
 
 TableRowCard.propTypes = {
+  dispatchIsExpenseBeingEdited: PropTypes.func.isRequired,
   dispatchRemovedIdToState: PropTypes.func.isRequired,
   dispatchTotalValue: PropTypes.func.isRequired,
   expense: PropTypes.objectOf(PropTypes.string).isRequired,
+  expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
   totalValueConvertedToBRL: PropTypes.number.isRequired,
 };
 

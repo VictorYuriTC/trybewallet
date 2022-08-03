@@ -11,6 +11,7 @@ import {
   RECEIVE_EXCHANGE_RATES_FAILURE,
   TOTAL_VALUE_CONVERTED_TO_BRL,
   REMOVE_EXPENSE_FROM_STATE,
+  IS_EXPENSE_BEING_EDITED,
 } from '../../constants/index';
 import getCurrencies from '../../services/currenciesAPI';
 
@@ -87,4 +88,9 @@ export const getTotalValueConvertedToBRL = (totalValueConvertedToBRL) => ({
 export const removeExpenseFromState = (id) => ({
   type: REMOVE_EXPENSE_FROM_STATE,
   id,
+});
+
+export const isEditing = (isExpenseBeingEdited) => ({
+  type: IS_EXPENSE_BEING_EDITED,
+  isExpenseBeingEdited,
 });

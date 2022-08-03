@@ -104,6 +104,11 @@ class WalletForm extends Component {
       />)
     ));
 
+    const { isExpenseBeingEdited } = this.props;
+
+    const SALVAR_DESPESA = 'Salvar despesa';
+    const EDITAR_DESPESA = 'Editar despesa';
+
     const {
       currency,
       description,
@@ -205,7 +210,9 @@ class WalletForm extends Component {
           name="saveNewExpenseButton"
           onClick={ this.onClickSaveNewExpense }
         >
-          Adicionar despesa
+          { isExpenseBeingEdited
+            ? EDITAR_DESPESA
+            : SALVAR_DESPESA }
         </button>
 
       </div>
@@ -217,6 +224,7 @@ const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
   exchangeRates: state.wallet.exchangeRates,
   expenses: state.wallet.expenses,
+  isExpenseBeingEdited: state.wallet.isExpenseBeingEdited,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -234,6 +242,7 @@ WalletForm.propTypes = {
   dispatchTotalValue: PropTypes.func.isRequired,
   exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isExpenseBeingEdited: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);

@@ -10,6 +10,7 @@ import {
   RECEIVE_EXCHANGE_RATES_FAILURE,
   TOTAL_VALUE_CONVERTED_TO_BRL,
   REMOVE_EXPENSE_FROM_STATE,
+  IS_EXPENSE_BEING_EDITED,
 } from '../../constants/index';
 
 const INITIAL_STATE = {
@@ -18,17 +19,13 @@ const INITIAL_STATE = {
   error: '',
   expenses: [],
   totalValueConvertedToBRL: 0,
+  isExpenseBeingEdited: false,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
   const {
-    type,
-    currencies,
-    error,
-    payload,
-    exchangeRates,
-    totalValueConvertedToBRL,
-    id,
+    type, currencies, error, payload, exchangeRates, totalValueConvertedToBRL, id,
+    isExpenseBeingEdited,
   } = action;
 
   switch (type) {
@@ -66,6 +63,11 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       expenses: [...state.expenses].filter((expense) => expense.id !== id),
+    };
+  case IS_EXPENSE_BEING_EDITED:
+    return {
+      ...state,
+      isExpenseBeingEdited,
     };
   default:
     return state;

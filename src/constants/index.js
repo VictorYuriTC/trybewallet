@@ -29,3 +29,5 @@ export const expensesValueAndCurrencyData = (expenses) => expenses
     }));
 
 export const REMOVE_EXPENSE_FROM_STATE = 'REMOVE_EXPENSE_FROM_STATE';
+
+export const IS_EXPENSE_BEING_EDITED = 'IS_EXPENSE_BEING_EDITED';
