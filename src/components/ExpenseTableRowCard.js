@@ -84,10 +84,11 @@ class ExpenseTableRowCard extends Component {
       ask,
     } = currencyData;
 
-    const renderValueConvertedToBRL = (Number(value) * Number(ask))
-      .toFixed(2);
-    const renderUsedExchange = Number(ask).toFixed(2);
     const renderValue = Number(value).toFixed(2);
+    const renderUsedExchange = Number(ask).toFixed(2);
+    const renderValueInBRL = (Number(value) * Number(ask))
+      .toFixed(2);
+    const renderConversionCurrency = 'Real';
 
     return (
       <tr>
@@ -110,10 +111,10 @@ class ExpenseTableRowCard extends Component {
           { renderUsedExchange }
         </td>
         <td>
-          { renderValueConvertedToBRL }
+          { renderValueInBRL }
         </td>
         <td>
-          Real
+          { renderConversionCurrency }
         </td>
         <td>
           <button

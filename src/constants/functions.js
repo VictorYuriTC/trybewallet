@@ -9,10 +9,10 @@ export const expensesValueAndCurrencyData = (expenses) => expenses
       value,
     }));
 
-export const toZeroWhenNegativeNumberOrNaN = () => {
-  const { value } = this.state;
+export const toZeroWhenNegativeNumberOrNaN = (value) => {
   if (Number(value) < 0
     || Number.isNaN(value)) {
-    this.setState({ value: 0.00 });
+    value = 0.00;
+    return value;
   }
 };

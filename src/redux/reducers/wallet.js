@@ -15,7 +15,7 @@ import {
 
 const INITIAL_STATE = {
   isLoading: false,
-  currenciesAcronyms: [],
+  currencies: [],
   error: '',
   expenses: [],
   totalValueInBRL: 0,
@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 
 const wallet = (state = INITIAL_STATE, action) => {
   const {
-    type, currenciesAcronyms, error, payload, exchangeRates, totalValueInBRL, id,
+    type, currencies, error, payload, exchangeRates, totalValueInBRL, id,
     isExpenseBeingEdited,
   } = action;
 
@@ -37,7 +37,7 @@ const wallet = (state = INITIAL_STATE, action) => {
   case RECEIVE_CURRENCIES:
     return {
       ...state,
-      currenciesAcronyms,
+      currencies,
     };
   case RECEIVE_CURRENCIES_FAILURE || RECEIVE_EXCHANGE_RATES_FAILURE:
     return {

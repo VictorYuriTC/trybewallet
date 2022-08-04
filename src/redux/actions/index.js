@@ -24,9 +24,9 @@ export const requestCurrencies = () => ({
   type: REQUEST_CURRENCIES,
 });
 
-export const receiveCurrencies = (currenciesAcronyms) => ({
+export const receiveCurrencies = (currencies) => ({
   type: RECEIVE_CURRENCIES,
-  currenciesAcronyms,
+  currencies,
 });
 
 export const receiveCurrenciesFailure = (error) => ({
@@ -51,7 +51,7 @@ export const receiveCurrencyName = (currencyName) => ({
   currencyName,
 });
 
-export const expensePayloadAction = (payload) => ({
+export const addExpenseAction = (payload) => ({
   type: EXPENSE_PAYLOAD,
   payload,
 });
