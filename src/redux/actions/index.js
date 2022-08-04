@@ -9,7 +9,7 @@ import {
   REQUEST_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES_FAILURE,
-  TOTAL_VALUE_CONVERTED_TO_BRL,
+  TOTAL_VALUE_IN_BRL,
   REMOVE_EXPENSE_FROM_STATE,
   IS_EXPENSE_BEING_EDITED,
 } from '../../constants/index';
@@ -24,9 +24,9 @@ export const requestCurrencies = () => ({
   type: REQUEST_CURRENCIES,
 });
 
-export const receiveCurrencies = (currencies) => ({
+export const receiveCurrencies = (currenciesAcronyms) => ({
   type: RECEIVE_CURRENCIES,
-  currencies,
+  currenciesAcronyms,
 });
 
 export const receiveCurrenciesFailure = (error) => ({
@@ -34,7 +34,7 @@ export const receiveCurrenciesFailure = (error) => ({
   error,
 });
 
-export const fetchCurrencies = () => async (dispatch) => {
+export const currenciesAcronymsAction = () => async (dispatch) => {
   dispatch(requestCurrencies);
   try {
     const currenciesResponse = await getCurrencies();
@@ -80,9 +80,9 @@ export const fetchExchangeRates = () => async (dispatch) => {
   }
 };
 
-export const getTotalValueConvertedToBRL = (totalValueConvertedToBRL) => ({
-  type: TOTAL_VALUE_CONVERTED_TO_BRL,
-  totalValueConvertedToBRL,
+export const totalValueInBRLAction = (totalValueInBRL) => ({
+  type: TOTAL_VALUE_IN_BRL,
+  totalValueInBRL,
 });
 
 export const removeExpenseFromState = (id) => ({

@@ -7,11 +7,11 @@ class Header extends Component {
   render() {
     const {
       email,
-      totalValueConvertedToBRL,
+      totalValueInBRL,
     } = this.props;
     const currency = 'BRL';
 
-    const renderTotalValue = totalValueConvertedToBRL.toFixed(2);
+    const renderTotalValue = totalValueInBRL.toFixed(2);
 
     return (
       <div>
@@ -34,7 +34,7 @@ const mapStateToProps = (state) => ({
   email: state.user.email,
   exchangeRates: state.wallet.exchangeRates,
   expenses: state.wallet.expenses,
-  totalValueConvertedToBRL: state.wallet.totalValueConvertedToBRL,
+  totalValueInBRL: state.wallet.totalValueInBRL,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 Header.propTypes = {
   email: PropTypes.string.isRequired,
-  totalValueConvertedToBRL: PropTypes.number.isRequired,
+  totalValueInBRL: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

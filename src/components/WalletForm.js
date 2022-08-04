@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import CurrencyOptionCard from './CurrencyOptionCard';
 import {
   expensePayloadAction,
-  fetchCurrencies,
+  currenciesAcronymsAction,
   fetchExchangeRates,
-  getTotalValueConvertedToBRL,
+  totalValueInBRLAction,
 } from '../redux/actions';
 import {
-  ALIMENTAÇÃO,
-  DINHEIRO,
+  FOOD,
+  MONEY,
   USD,
   expensesValueAndCurrencyData,
 } from '../constants';
@@ -24,16 +24,16 @@ class WalletForm extends Component {
       value: '',
       description: '',
       currency: USD,
-      method: DINHEIRO,
-      tag: ALIMENTAÇÃO,
+      method: MONEY,
+      tag: FOOD,
     };
   }
 
   componentDidMount() {
     const {
-      dispatchCurrenciesAcronymsToState,
+      dispatchCurrenciesAcronyms,
     } = this.props;
-    dispatchCurrenciesAcronymsToState();
+    dispatchCurrenciesAcronyms();
   }
 
   onInputChange = ({ target }) => {
@@ -54,15 +54,15 @@ class WalletForm extends Component {
 
   toZeroWhenNegativeNumberOrNaN = () => {
     const { value } = this.state;
-    if (value < 0
-      || value.includes('-')) {
+    if (Number(value) < 0
+      || Number.isNaN(value)) {
       this.setState({ value: 0.00 });
     }
   }
 
   convertCurrencyToBRL = () => {
     const {
-      dispatchTotalValue,
+      dispatchTotalValueInBRL,
       expenses,
     } = this.props;
 
@@ -70,34 +70,34 @@ class WalletForm extends Component {
       .map(({ currencyInfo, value }) => Number(currencyInfo.ask) * Number(value));
     const totalValueInBRL = (expensesValuesConvertedToBRL
       .reduce((sum, value) => sum + value, 0));
-    dispatchTotalValue(totalValueInBRL);
+    dispatchTotalValueInBRL(totalValueInBRL);
   }
 
   onClickSaveNewExpense = async () => {
     const {
-      dispatchExchangeRatesToState,
-      dispatchExpenseToState,
+      dispatchExchangeRates,
+      dispatchAddExpense,
     } = this.props;
-    await dispatchExchangeRatesToState();
+    await dispatchExchangeRates();
     const { exchangeRates } = this.props;
-    await dispatchExpenseToState({ ...this.state, exchangeRates });
+    await dispatchAddExpense({ ...this.state, exchangeRates });
     this.setState((prevState) => ({
       id: prevState.id + 1,
       value: '',
       description: '',
       currency: USD,
-      method: DINHEIRO,
-      tag: ALIMENTAÇÃO,
+      method: MONEY,
+      tag: FOOD,
     }));
     this.convertCurrencyToBRL();
   }
 
   render() {
     const {
-      currencies,
+      currenciesAcronyms,
     } = this.props;
 
-    const renderCurrencies = currencies.map((currencyName) => (
+    const renderCurrencies = currenciesAcronyms.map((currencyName) => (
       (<CurrencyOptionCard
         key={ currencyName }
         currencyName={ currencyName }
@@ -106,8 +106,8 @@ class WalletForm extends Component {
 
     const { isExpenseBeingEdited } = this.props;
 
-    const ADICIONAR_DESPESA = 'Adicionar despesa';
-    const EDITAR_DESPESA = 'Editar despesa';
+    const ADD_EXPENSE = 'Adicionar despesa';
+    const EDIT_EXPENSE = 'Editar despesa';
 
     const {
       currency,
@@ -211,8 +211,8 @@ class WalletForm extends Component {
           onClick={ this.onClickSaveNewExpense }
         >
           { isExpenseBeingEdited
-            ? EDITAR_DESPESA
-            : ADICIONAR_DESPESA }
+            ? ADD_EXPENSE
+            : EDIT_EXPENSE }
         </button>
 
       </div>
@@ -221,25 +221,25 @@ class WalletForm extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  currencies: state.wallet.currencies,
+  currenciesAcronyms: state.wallet.currenciesAcronyms,
   exchangeRates: state.wallet.exchangeRates,
   expenses: state.wallet.expenses,
   isExpenseBeingEdited: state.wallet.isExpenseBeingEdited,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchCurrenciesAcronymsToState: (payload) => dispatch(fetchCurrencies(payload)),
-  dispatchExchangeRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
-  dispatchExpenseToState: (payload) => dispatch(expensePayloadAction(payload)),
-  dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
+  dispatchCurrenciesAcronyms: (payload) => dispatch(currenciesAcronymsAction(payload)),
+  dispatchExchangeRates: (payload) => dispatch(fetchExchangeRates(payload)),
+  dispatchAddExpense: (payload) => dispatch(expensePayloadAction(payload)),
+  dispatchTotalValueInBRL: (payload) => dispatch(totalValueInBRLAction(payload)),
 });
 
 WalletForm.propTypes = {
-  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
-  dispatchCurrenciesAcronymsToState: PropTypes.func.isRequired,
-  dispatchExchangeRatesToState: PropTypes.func.isRequired,
-  dispatchExpenseToState: PropTypes.func.isRequired,
-  dispatchTotalValue: PropTypes.func.isRequired,
+  currenciesAcronyms: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dispatchCurrenciesAcronyms: PropTypes.func.isRequired,
+  dispatchExchangeRates: PropTypes.func.isRequired,
+  dispatchAddExpense: PropTypes.func.isRequired,
+  dispatchTotalValueInBRL: PropTypes.func.isRequired,
   exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
   isExpenseBeingEdited: PropTypes.bool.isRequired,

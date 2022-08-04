@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   isEditing,
-  getTotalValueConvertedToBRL,
+  totalValueInBRLAction,
   removeExpenseFromState,
 } from '../redux/actions';
 
-class TableRowCard extends Component {
+class ExpenseTableRowCard extends Component {
   constructor() {
     super();
 
@@ -20,9 +20,9 @@ class TableRowCard extends Component {
   onClickDeleteExpense = async () => {
     const {
       dispatchRemovedIdToState,
-      dispatchTotalValue,
+      dispatchTotalValueInBRL,
       expense,
-      totalValueConvertedToBRL,
+      totalValueInBRL,
     } = this.props;
 
     const {
@@ -38,11 +38,11 @@ class TableRowCard extends Component {
     const { ask } = currencyData;
 
     const valueConvertedToBRL = (Number(ask) * Number(value)).toFixed(2);
-    const valueAfterDeletion = Number(totalValueConvertedToBRL) - valueConvertedToBRL;
+    const valueAfterDeletion = Number(totalValueInBRL) - valueConvertedToBRL;
     const totalValue = () => (valueAfterDeletion < 0 ? 0.00 : valueAfterDeletion);
 
     dispatchRemovedIdToState(id);
-    dispatchTotalValue(totalValue());
+    dispatchTotalValueInBRL(totalValue());
   }
 
   onClickEditExpense = () => {
@@ -138,22 +138,30 @@ class TableRowCard extends Component {
 
 const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
-  totalValueConvertedToBRL: state.wallet.totalValueConvertedToBRL,
+  totalValueInBRL: state.wallet.totalValueInBRL,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchIsExpenseBeingEdited: (payload) => dispatch(isEditing(payload)),
   dispatchRemovedIdToState: (payload) => dispatch(removeExpenseFromState(payload)),
-  dispatchTotalValue: (payload) => dispatch(getTotalValueConvertedToBRL(payload)),
+  dispatchTotalValueInBRL: (payload) => dispatch(totalValueInBRLAction(payload)),
 });
 
-TableRowCard.propTypes = {
+ExpenseTableRowCard.propTypes = {
   dispatchIsExpenseBeingEdited: PropTypes.func.isRequired,
   dispatchRemovedIdToState: PropTypes.func.isRequired,
-  dispatchTotalValue: PropTypes.func.isRequired,
-  expense: PropTypes.objectOf(PropTypes.string).isRequired,
+  dispatchTotalValueInBRL: PropTypes.func.isRequired,
+  expense: PropTypes.shape({
+    currency: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
+    id: PropTypes.number.isRequired,
+    method: PropTypes.string.isRequired,
+    tag: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+  }).isRequired,
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
-  totalValueConvertedToBRL: PropTypes.number.isRequired,
+  totalValueInBRL: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableRowCard);
+export default connect(mapStateToProps, mapDispatchToProps)(ExpenseTableRowCard);

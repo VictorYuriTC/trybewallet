@@ -8,23 +8,23 @@ import {
   REQUEST_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES_FAILURE,
-  TOTAL_VALUE_CONVERTED_TO_BRL,
+  TOTAL_VALUE_IN_BRL,
   REMOVE_EXPENSE_FROM_STATE,
   IS_EXPENSE_BEING_EDITED,
 } from '../../constants/index';
 
 const INITIAL_STATE = {
   isLoading: false,
-  currencies: [],
+  currenciesAcronyms: [],
   error: '',
   expenses: [],
-  totalValueConvertedToBRL: 0,
+  totalValueInBRL: 0,
   isExpenseBeingEdited: false,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
   const {
-    type, currencies, error, payload, exchangeRates, totalValueConvertedToBRL, id,
+    type, currenciesAcronyms, error, payload, exchangeRates, totalValueInBRL, id,
     isExpenseBeingEdited,
   } = action;
 
@@ -37,7 +37,7 @@ const wallet = (state = INITIAL_STATE, action) => {
   case RECEIVE_CURRENCIES:
     return {
       ...state,
-      currencies,
+      currenciesAcronyms,
     };
   case RECEIVE_CURRENCIES_FAILURE || RECEIVE_EXCHANGE_RATES_FAILURE:
     return {
@@ -54,10 +54,10 @@ const wallet = (state = INITIAL_STATE, action) => {
       ...state,
       exchangeRates,
     };
-  case TOTAL_VALUE_CONVERTED_TO_BRL:
+  case TOTAL_VALUE_IN_BRL:
     return {
       ...state,
-      totalValueConvertedToBRL,
+      totalValueInBRL,
     };
   case REMOVE_EXPENSE_FROM_STATE:
     return {
