@@ -44,15 +44,20 @@ class WalletForm extends Component {
       value,
     } = target;
 
-    if (type !== 'checkbox') { this.setState({ [name]: value }); }
-    if (type === 'checkbox') { this.setState({ [name]: checked }); }
-
-    this.toZeroWhenNegativeNumberOrNaN();
+    if (type !== 'checkbox') {
+      this.setState({ [name]: value }, () => this.toZeroWhenNegativeNumberOrNaN());
+    }
+    if (type === 'checkbox') {
+      this.setState({ [name]: checked }, () => this.toZeroWhenNegativeNumberOrNaN());
+    }
   }
 
   toZeroWhenNegativeNumberOrNaN = () => {
     const { value } = this.state;
-    if (value < 0 || Number.isNaN(value)) { this.setState({ value: 0 }); }
+    if (value < 0
+      || value.includes('-')) {
+      this.setState({ value: 0.00 });
+    }
   }
 
   convertCurrencyToBRL = () => {
@@ -74,11 +79,6 @@ class WalletForm extends Component {
       dispatchExpenseToState,
     } = this.props;
     await dispatchExchangeRatesToState();
-    /* const getCurrenciesFromAPI = await getCurrencies();
-    const exchangeRatesWithoutUSDT = Object.entries(getCurrenciesFromAPI);
-    .filter((rate) => !rate.includes('USDT'));
-    exchangeRates.USDT = undefined;
-    const exchangeRates = Object.fromEntries(exchangeRatesWithoutUSDT); */
     const { exchangeRates } = this.props;
     await dispatchExpenseToState({ ...this.state, exchangeRates });
     this.setState((prevState) => ({
