@@ -11,7 +11,7 @@ import {
   TOTAL_VALUE_IN_BRL,
   REMOVE_EXPENSE_FROM_STATE,
   IS_EXPENSE_BEING_EDITED,
-} from '../../constants/index';
+} from '../../constants/actionTypes';
 
 const INITIAL_STATE = {
   isLoading: false,

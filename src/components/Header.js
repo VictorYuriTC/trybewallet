@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchExchangeRates } from '../redux/actions';
 
 class Header extends Component {
   render() {
@@ -37,13 +36,9 @@ const mapStateToProps = (state) => ({
   totalValueInBRL: state.wallet.totalValueInBRL,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  dispatchCurrencyRatesToState: (payload) => dispatch(fetchExchangeRates(payload)),
-});
-
 Header.propTypes = {
   email: PropTypes.string.isRequired,
   totalValueInBRL: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, null)(Header);

@@ -12,7 +12,7 @@ import {
   TOTAL_VALUE_IN_BRL,
   REMOVE_EXPENSE_FROM_STATE,
   IS_EXPENSE_BEING_EDITED,
-} from '../../constants/index';
+} from '../../constants/actionTypes';
 import getCurrencies from '../../services/currenciesAPI';
 
 export const userLoginAction = (email) => ({
@@ -70,7 +70,7 @@ export const receiveExchangeRatesFailure = (error) => ({
   error,
 });
 
-export const fetchExchangeRates = () => async (dispatch) => {
+export const exchangeRatesAction = () => async (dispatch) => {
   dispatch(requestExchangeRates);
   try {
     const currenciesResponse = await getCurrencies();

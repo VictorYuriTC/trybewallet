@@ -5,15 +5,19 @@ import CurrencyOptionCard from './CurrencyOptionCard';
 import {
   expensePayloadAction,
   currenciesAcronymsAction,
-  fetchExchangeRates,
+  exchangeRatesAction,
   totalValueInBRLAction,
 } from '../redux/actions';
 import {
   FOOD,
   MONEY,
   USD,
+} from '../constants/absoluteConstants';
+
+import {
   expensesValueAndCurrencyData,
-} from '../constants';
+  toZeroWhenNegativeNumberOrNaN,
+} from '../constants/functions';
 
 class WalletForm extends Component {
   constructor() {
@@ -45,22 +49,14 @@ class WalletForm extends Component {
     } = target;
 
     if (type !== 'checkbox') {
-      this.setState({ [name]: value }, () => this.toZeroWhenNegativeNumberOrNaN());
+      this.setState({ [name]: value }, () => toZeroWhenNegativeNumberOrNaN());
     }
     if (type === 'checkbox') {
-      this.setState({ [name]: checked }, () => this.toZeroWhenNegativeNumberOrNaN());
+      this.setState({ [name]: checked }, () => toZeroWhenNegativeNumberOrNaN());
     }
   }
 
-  toZeroWhenNegativeNumberOrNaN = () => {
-    const { value } = this.state;
-    if (Number(value) < 0
-      || Number.isNaN(value)) {
-      this.setState({ value: 0.00 });
-    }
-  }
-
-  convertCurrencyToBRL = () => {
+  convertArrayOfCurrenciesToBRL = () => {
     const {
       dispatchTotalValueInBRL,
       expenses,
@@ -89,7 +85,7 @@ class WalletForm extends Component {
       method: MONEY,
       tag: FOOD,
     }));
-    this.convertCurrencyToBRL();
+    this.convertArrayOfCurrenciesToBRL();
   }
 
   render() {
@@ -108,6 +104,8 @@ class WalletForm extends Component {
 
     const ADD_EXPENSE = 'Adicionar despesa';
     const EDIT_EXPENSE = 'Editar despesa';
+
+    const renderButtonText = isExpenseBeingEdited ? EDIT_EXPENSE : ADD_EXPENSE;
 
     const {
       currency,
@@ -210,9 +208,7 @@ class WalletForm extends Component {
           name="saveNewExpenseButton"
           onClick={ this.onClickSaveNewExpense }
         >
-          { isExpenseBeingEdited
-            ? ADD_EXPENSE
-            : EDIT_EXPENSE }
+          { renderButtonText }
         </button>
 
       </div>
@@ -229,7 +225,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchCurrenciesAcronyms: (payload) => dispatch(currenciesAcronymsAction(payload)),
-  dispatchExchangeRates: (payload) => dispatch(fetchExchangeRates(payload)),
+  dispatchExchangeRates: (payload) => dispatch(exchangeRatesAction(payload)),
   dispatchAddExpense: (payload) => dispatch(expensePayloadAction(payload)),
   dispatchTotalValueInBRL: (payload) => dispatch(totalValueInBRLAction(payload)),
 });
