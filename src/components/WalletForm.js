@@ -47,7 +47,6 @@ class WalletForm extends Component {
 
   onInputChange = ({ target }) => {
     const {
-      checked,
       name,
       type,
       value,
@@ -55,9 +54,6 @@ class WalletForm extends Component {
 
     if (type !== 'checkbox') {
       this.setState({ [name]: value }, () => this.changeValueInputToZero);
-    }
-    if (type === 'checkbox') {
-      this.setState({ [name]: checked }, () => this.changeValueInputToZero);
     }
   }
 
