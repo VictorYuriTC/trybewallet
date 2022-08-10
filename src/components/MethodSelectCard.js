@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class MethodInputCard extends React.Component {
+class MethodSelectCard extends React.Component {
   render() {
     const {
       onChange,
@@ -31,9 +31,9 @@ class MethodInputCard extends React.Component {
   }
 }
 
-MethodInputCard.propTypes = {
+MethodSelectCard.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
 };
 
-export default MethodInputCard;
+export default MethodSelectCard;
