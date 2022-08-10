@@ -14,7 +14,7 @@ describe('ExpenseTableRowCard component suite tests', () => {
   it('should tests rest of inputs', () => {
     const expense = {
       tag: 'Alimentação',
-      value: '5',
+      value: '543',
       method: 'Dinheiro',
       currency: 'USD',
       description: 'Hot-Dog'
@@ -23,5 +23,23 @@ describe('ExpenseTableRowCard component suite tests', () => {
     key={ expense }
     expense={ expense }
     />)
+
+    const editButton = screen.getByTestId('edit-btn');
+    const deleteButton = screen.getByTestId('delete-btn');
+    const exchangeRates = mockData;
+
+    userEvent.click(editButton);
+    userEvent.click(deleteButton);
+    const tag = screen.getByText('Alimentação')
+    const value = screen.getByText('543');
+    const method = screen.getByText('Dinheiro');
+    const currency = screen.getByText('USD');
+    const description = 'Hot-Dog';
+
+    expect(tag).toBeInTheDocument();
+    expect(value).toBeInTheDocument();
+    expect(method).toBeInTheDocument();
+    expect(currency).toBeInTheDocument();
+    expect(description).toBeInTheDocument();
   })
 });
