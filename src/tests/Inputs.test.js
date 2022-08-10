@@ -11,7 +11,12 @@ describe('inputs suite tests', () => {
       json: jest.fn().mockResolvedValue(mockData),
     });
 
-    renderWithRouterAndRedux(<WalletForm />, { initialState: { wallet } });
+    renderWithRouterAndRedux(<WalletForm />, { initialState: { wallet: { isLoading: false,
+      currencies: [],
+      error: '',
+      expenses: [],
+      totalValueInBRL: 0,
+      isExpenseBeingEdited: false,} } });
 
     const valueInput = screen.getByLabelText(/perdi quanto?/i);
     const descriptionInput = screen.getByLabelText(/gastei no quê?/i);
