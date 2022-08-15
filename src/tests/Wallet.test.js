@@ -34,11 +34,15 @@ describe('Wallet page suite tests', () => {
     const tagInput = screen.getByTestId('tag-input');
 
     userEvent.type(valueInput, '3');
+    userEvent.type(valueInput, '-3');
+
     userEvent.type(descriptionInput, 'Hot-dog');
     userEvent.type(currencyInput, 'USD');
     userEvent.type(methodInput, 'Dinheiro');
     userEvent.type(tagInput, 'Alimentação');
 
-    const saveNewExpenseButton = screen.getByRole('button', { name: /adicionar despesa/i } );
+    const saveNewExpenseButton = screen.getByLabelText('Tudo bem, põe na minha conta...');
+    userEvent.click(saveNewExpenseButton);
   });
+
 });

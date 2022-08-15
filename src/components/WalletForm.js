@@ -201,6 +201,7 @@ class WalletForm extends Component {
         <label htmlFor="saveNewExpenseButton">
           Tudo bem, põe na minha conta...
           <button
+            id="saveNewExpenseButton"
             type="button"
             name="saveNewExpenseButton"
             onClick={ this.onClickSaveNewExpense }
