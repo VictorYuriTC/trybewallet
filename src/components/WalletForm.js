@@ -2,27 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CurrencyOptionCard from './CurrencyOptionCard';
-import {
-  addExpenseAction,
-  currenciesAcronymsAction,
-  exchangeRatesAction,
+import { addExpenseAction, currenciesAcronymsAction, exchangeRatesAction,
   totalValueInBRLAction,
 } from '../redux/actions';
-import {
-  FOOD,
-  MONEY,
-  USD,
-} from '../constants/absoluteConstants';
+import { FOOD, MONEY, USD } from '../constants/absoluteConstants';
 
 import {
   expensesValueAndCurrencyData,
   toZeroWhenNegativeNumberOrNaN,
 } from '../constants/functions';
-import TagSelectCard from './TagSelectCard';
-import MethodSelectCard from './MethodSelectCard';
-import DescriptionInputCard from './DescriptionInputCard';
-import ValueInputCard from './ValueInputCard';
-import CurrenciesSelectCard from './CurrenciesSelectCard';
 
 class WalletForm extends Component {
   constructor() {
@@ -92,11 +80,6 @@ class WalletForm extends Component {
 
     await dispatchAddExpense({ ...this.state, exchangeRates });
 
-    // const { id } = this.state;
-    // const generateNewId = Number(id) + 1;
-    // const newId = generateNewId.toString();
-    // created to turn ids into strings, since there safer than using numbers
-
     this.setState((prevState) => ({
       id: prevState.id + 1,
       value: '',
@@ -120,12 +103,7 @@ class WalletForm extends Component {
       />)
     ));
 
-    const { isExpenseBeingEdited } = this.props;
-
     const ADD_EXPENSE = 'Adicionar despesa';
-    const EDIT_EXPENSE = 'Editar despesa';
-
-    const renderButtonText = isExpenseBeingEdited ? EDIT_EXPENSE : ADD_EXPENSE;
 
     const {
       currency,
@@ -138,31 +116,87 @@ class WalletForm extends Component {
     return (
       <div>
 
-        <ValueInputCard
-          value={ value }
-          onChange={ this.onInputChange }
-        />
+        <label htmlFor="value">
+          Perdi quanto?
+          <input
+            placeholder="Valor"
+            type="number"
+            min="0"
+            name="value"
+            value={ value }
+            data-testid="value-input"
+            onChange={ this.onInputChange }
+          />
+        </label>
 
-        <DescriptionInputCard
-          value={ description }
-          onChange={ this.onInputChange }
-        />
+        <label htmlFor="description">
+          Gastei no quê?
+          <input
+            placeholder="Produto/serviço/outro"
+            name="description"
+            value={ description }
+            data-testid="description-input"
+            onChange={ this.onInputChange }
+          />
+        </label>
 
-        <CurrenciesSelectCard
-          value={ currency }
-          onChange={ this.onInputChange }
-          currenciesAcronyms={ renderCurrenciesAcronyms }
-        />
+        <label htmlFor="currency">
+          Com qual dinheiro?
+          <select
+            data-testid="currency-input"
+            name="currency"
+            value={ currency }
+            onChange={ this.onInputChange }
+          >
+            { renderCurrenciesAcronyms }
+          </select>
+        </label>
 
-        <MethodSelectCard
-          value={ method }
-          onChange={ this.onInputChange }
-        />
+        <label htmlFor="method">
+          Paguei de que jeito?
+          <select
+            name="method"
+            value={ method }
+            data-testid="method-input"
+            onChange={ this.onInputChange }
+          >
+            <option value="Dinheiro">
+              Dinheiro
+            </option>
+            <option value="Cartão de crédito">
+              Cartão de crédito
+            </option>
+            <option value="Cartão de débito">
+              Cartão de débito
+            </option>
+          </select>
+        </label>
 
-        <TagSelectCard
-          value={ tag }
-          onChange={ this.onInputChange }
-        />
+        <label htmlFor="tag">
+          Comprei por quê?
+          <select
+            name="tag"
+            value={ tag }
+            data-testid="tag-input"
+            onChange={ this.onInputChange }
+          >
+            <option value="Alimentação">
+              Alimentação
+            </option>
+            <option value="Lazer">
+              Lazer
+            </option>
+            <option value="Trabalho">
+              Trabalho
+            </option>
+            <option value="Transporte">
+              Transporte
+            </option>
+            <option value="Saúde">
+              Saúde
+            </option>
+          </select>
+        </label>
 
         <label htmlFor="saveNewExpenseButton">
           Tudo bem, põe na minha conta...
@@ -171,7 +205,7 @@ class WalletForm extends Component {
             name="saveNewExpenseButton"
             onClick={ this.onClickSaveNewExpense }
           >
-            { renderButtonText }
+            { ADD_EXPENSE }
           </button>
         </label>
 
@@ -202,7 +236,6 @@ WalletForm.propTypes = {
   dispatchTotalValueInBRL: PropTypes.func.isRequired,
   exchangeRates: PropTypes.objectOf(PropTypes.object).isRequired,
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isExpenseBeingEdited: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);
