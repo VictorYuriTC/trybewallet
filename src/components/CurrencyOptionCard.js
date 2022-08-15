@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class CurrencyOptions extends React.Component {
+class CurrencyOptionCard extends React.Component {
   render() {
     const { currencyName } = this.props;
     return (
@@ -12,8 +12,8 @@ class CurrencyOptions extends React.Component {
   }
 }
 
-CurrencyOptions.propTypes = {
+CurrencyOptionCard.propTypes = {
   currencyName: PropTypes.string.isRequired,
 };
 
-export default CurrencyOptions;
+export default CurrencyOptionCard;

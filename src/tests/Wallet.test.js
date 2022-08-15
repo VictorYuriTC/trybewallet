@@ -5,6 +5,10 @@ import { renderWithRouterAndRedux } from "./helpers/renderWith";
 import App from '../App';
 import mockData from './helpers/mockData'
 import WalletForm from '../components/WalletForm';
+import Header from '../components/Header';
+import Table from '../components/Table';
+import CurrencyOptionCard from '../components/CurrencyOptionCard';
+import ExpenseTableRowCard from '../components/ExpenseTableRowCard';
 
 describe('Wallet page suite tests', () => {
   it('should allow the user to change inputs and save the expense', () => {
@@ -35,14 +39,39 @@ describe('Wallet page suite tests', () => {
 
     userEvent.type(valueInput, '3');
     userEvent.type(valueInput, '-3');
-
     userEvent.type(descriptionInput, 'Hot-dog');
+    renderWithRouterAndRedux(<CurrencyOptionCard />);
     userEvent.type(currencyInput, 'USD');
+    userEvent.type(currencyInput, 'ARS');
     userEvent.type(methodInput, 'Dinheiro');
     userEvent.type(tagInput, 'Alimentação');
 
     const saveNewExpenseButton = screen.getByLabelText('Tudo bem, põe na minha conta...');
     userEvent.click(saveNewExpenseButton);
-  });
 
+    renderWithRouterAndRedux(<Header />);
+
+    const emailH1 = screen.getByTestId('email-field');
+    expect(emailH1).toBeInTheDocument();
+
+    renderWithRouterAndRedux(<Table />);
+    renderWithRouterAndRedux(
+    <ExpenseTableRowCard
+      expense={ {
+        value: '3',
+        description: 'Hot-dog',
+        currency: 'USD',
+        method: 'Dinheiro',
+        tag: 'Alimentação',
+        exchangeRates: mockData
+      }}
+    />
+    );
+
+    const deleteExpenseButton = screen.getByTestId('delete-btn');
+    const editExpenseButton = screen.getByTestId('edit-btn');
+
+    userEvent.click(deleteExpenseButton);
+    userEvent.click(editExpenseButton);
+  });
 });
