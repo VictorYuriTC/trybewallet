@@ -1,13 +1,9 @@
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
 
 import {
-  REQUEST_CURRENCIES,
   RECEIVE_CURRENCIES,
-  RECEIVE_CURRENCIES_FAILURE,
   EXPENSE_PAYLOAD,
-  REQUEST_EXCHANGE_RATES,
   RECEIVE_EXCHANGE_RATES,
-  RECEIVE_EXCHANGE_RATES_FAILURE,
   TOTAL_VALUE_IN_BRL,
   REMOVE_EXPENSE_FROM_STATE,
   IS_EXPENSE_BEING_EDITED,
@@ -24,25 +20,15 @@ const INITIAL_STATE = {
 
 const wallet = (state = INITIAL_STATE, action) => {
   const {
-    type, currencies, error, payload, exchangeRates, totalValueInBRL, id,
+    type, currencies, payload, exchangeRates, totalValueInBRL, id,
     isExpenseBeingEdited,
   } = action;
 
   switch (type) {
-  case REQUEST_CURRENCIES || REQUEST_EXCHANGE_RATES:
-    return {
-      ...state,
-      isLoading: !state.isLoading,
-    };
   case RECEIVE_CURRENCIES:
     return {
       ...state,
       currencies,
-    };
-  case RECEIVE_CURRENCIES_FAILURE || RECEIVE_EXCHANGE_RATES_FAILURE:
-    return {
-      ...state,
-      error,
     };
   case EXPENSE_PAYLOAD:
     return {

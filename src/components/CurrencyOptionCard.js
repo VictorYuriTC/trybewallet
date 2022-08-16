@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 
 class CurrencyOptionCard extends React.Component {
   render() {
-    const { currencyName } = this.props;
+    const {
+      currencyName,
+      value,
+    } = this.props;
+
     return (
-      <option value={ currencyName }>
+      <option
+        key={ currencyName }
+        value={ value }
+      >
         { currencyName }
       </option>
     );
@@ -14,6 +21,7 @@ class CurrencyOptionCard extends React.Component {
 
 CurrencyOptionCard.propTypes = {
   currencyName: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
 };
 
 export default CurrencyOptionCard;

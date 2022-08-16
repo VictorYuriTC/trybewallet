@@ -12,7 +12,11 @@ import ExpenseTableRowCard from '../components/ExpenseTableRowCard';
 
 describe('Wallet page suite tests', () => {
   it('should allow the user to change inputs and save the expense', () => {
-    const { history } = renderWithRouterAndRedux(<App />);
+    const currenciesResponse = mockData;
+    const currenciesAcronyms = Object.keys(currenciesResponse);
+    currenciesAcronyms.splice(1, 1);
+
+    renderWithRouterAndRedux(<App />);
     
     const emailInput = screen.getByTestId('email-input');
     const passwordInput = screen.getByTestId('password-input');
@@ -26,8 +30,6 @@ describe('Wallet page suite tests', () => {
 
     renderWithRouterAndRedux(<WalletForm />);
 
-    console.log(history.location.pathname);
-
     global.fetch = jest.fn(() => Promise.resolve({
       json: () => Promise.resolve(mockData), }));
 
@@ -39,20 +41,60 @@ describe('Wallet page suite tests', () => {
 
     userEvent.type(valueInput, '3');
     userEvent.type(valueInput, '-3');
+    userEvent.type(currencyInput, 'ARS')
     userEvent.type(descriptionInput, 'Hot-dog');
-    renderWithRouterAndRedux(<CurrencyOptionCard />);
-    userEvent.type(currencyInput, 'USD');
-    userEvent.type(currencyInput, 'ARS');
     userEvent.type(methodInput, 'Dinheiro');
     userEvent.type(tagInput, 'Alimentação');
 
     const saveNewExpenseButton = screen.getByLabelText('Tudo bem, põe na minha conta...');
     userEvent.click(saveNewExpenseButton);
 
+    <CurrencyOptionCard
+      value="USD"
+      currencyName="USD" />
+  });
+
+  it('should render a header with the expected informations', () => {
+    renderWithRouterAndRedux(<App />);
+    
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+
+    userEvent.type(emailInput, 'victor@test.com');
+    userEvent.type(passwordInput, 'teste123');
+
+    const loginButton = screen.getByRole('button', { name: /entrar/i});
+    
+    userEvent.click(loginButton);
+
+    renderWithRouterAndRedux(<WalletForm />);
+
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve(mockData), }));
+
     renderWithRouterAndRedux(<Header />);
 
     const emailH1 = screen.getByTestId('email-field');
     expect(emailH1).toBeInTheDocument();
+  })
+
+  it('should render a table with all saved expenses', () => {
+    renderWithRouterAndRedux(<App />);
+    
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+
+    userEvent.type(emailInput, 'victor@test.com');
+    userEvent.type(passwordInput, 'teste123');
+
+    const loginButton = screen.getByRole('button', { name: /entrar/i});
+    
+    userEvent.click(loginButton);
+
+    renderWithRouterAndRedux(<WalletForm />);
+
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve(mockData), }));
 
     renderWithRouterAndRedux(<Table />);
     renderWithRouterAndRedux(
@@ -73,5 +115,5 @@ describe('Wallet page suite tests', () => {
 
     userEvent.click(deleteExpenseButton);
     userEvent.click(editExpenseButton);
-  });
+  })
 });

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import CurrencyOptionCard from './CurrencyOptionCard';
 import { addExpenseAction, currenciesAcronymsAction, exchangeRatesAction,
   totalValueInBRLAction,
 } from '../redux/actions';
@@ -9,8 +8,8 @@ import { FOOD, MONEY, USD } from '../constants/absoluteConstants';
 
 import {
   expensesValueAndCurrencyData,
-  toZeroWhenNegativeNumberOrNaN,
 } from '../constants/functions';
+import CurrencyOptionCard from './CurrencyOptionCard';
 
 class WalletForm extends Component {
   constructor() {
@@ -41,16 +40,8 @@ class WalletForm extends Component {
     } = target;
 
     if (type !== 'checkbox') {
-      this.setState({ [name]: value }, () => this.changeValueInputToZero);
+      this.setState({ [name]: value });
     }
-  }
-
-  changeValueInputToZero = () => {
-    const { value } = this.state;
-
-    const newValue = toZeroWhenNegativeNumberOrNaN(value);
-
-    this.setState({ value: newValue });
   }
 
   convertArrayOfCurrenciesToBRL = () => {
@@ -95,13 +86,6 @@ class WalletForm extends Component {
     const {
       currencies,
     } = this.props;
-
-    const renderCurrenciesAcronyms = currencies.map((currencyName) => (
-      (<CurrencyOptionCard
-        key={ currencyName }
-        currencyName={ currencyName }
-      />)
-    ));
 
     const ADD_EXPENSE = 'Adicionar despesa';
 
@@ -148,7 +132,15 @@ class WalletForm extends Component {
             value={ currency }
             onChange={ this.onInputChange }
           >
-            { renderCurrenciesAcronyms }
+            { currencies.map((currencyName) => (
+              (
+                <CurrencyOptionCard
+                  key={ currencyName }
+                  currencyName={ currencyName }
+                  value={ currencyName }
+                />
+              )
+            )) }
           </select>
         </label>
 

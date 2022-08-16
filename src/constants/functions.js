@@ -8,11 +8,3 @@ export const expensesValueAndCurrencyData = (expenses) => expenses
       currencyInfo: getSelectedCurrencyData(expenses, currency),
       value,
     }));
-
-export const toZeroWhenNegativeNumberOrNaN = (value) => {
-  if (Number(value) < 0
-    || Number.isNaN(value)) {
-    value = 0.00;
-    return value;
-  }
-};
