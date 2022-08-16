@@ -11,7 +11,7 @@ import CurrencyOptionCard from '../components/CurrencyOptionCard';
 import ExpenseTableRowCard from '../components/ExpenseTableRowCard';
 
 describe('Wallet page suite tests', () => {
-  it('should allow the user to change inputs and save the expense', () => {
+  it('should allow the user to change inputs and save the expense', async () => {
     const currenciesResponse = mockData;
     const currenciesAcronyms = Object.keys(currenciesResponse);
     currenciesAcronyms.splice(1, 1);
@@ -40,8 +40,7 @@ describe('Wallet page suite tests', () => {
     const tagInput = screen.getByTestId('tag-input');
 
     userEvent.type(valueInput, '3');
-    userEvent.type(valueInput, '-3');
-    userEvent.type(currencyInput, 'ARS')
+    userEvent.type(currencyInput, 'USD')
     userEvent.type(descriptionInput, 'Hot-dog');
     userEvent.type(methodInput, 'Dinheiro');
     userEvent.type(tagInput, 'Alimentação');
@@ -49,9 +48,8 @@ describe('Wallet page suite tests', () => {
     const saveNewExpenseButton = screen.getByLabelText('Tudo bem, põe na minha conta...');
     userEvent.click(saveNewExpenseButton);
 
-    <CurrencyOptionCard
-      value="USD"
-      currencyName="USD" />
+    const descriptionTyped = await screen.findByText(/hot-dog/i);
+    expect(descriptionTyped).toBeInTheDocument();
   });
 
   it('should render a header with the expected informations', () => {
@@ -115,5 +113,40 @@ describe('Wallet page suite tests', () => {
 
     userEvent.click(deleteExpenseButton);
     userEvent.click(editExpenseButton);
-  })
+  });
+
+  it('should fetch all the currency names', () => {
+    renderWithRouterAndRedux(<App />);
+    
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+
+    userEvent.type(emailInput, 'victor@test.com');
+    userEvent.type(passwordInput, 'teste123');
+
+    const loginButton = screen.getByRole('button', { name: /entrar/i});
+    
+    userEvent.click(loginButton);
+
+    renderWithRouterAndRedux(<WalletForm />);
+
+    const allCurrencies = Object.keys(mockData);
+    allCurrencies.splice(1, 1);
+  
+    global.fetch = jest.fn(() => Promise.resolve({
+      json: () => Promise.resolve(allCurrencies), }));
+
+    allCurrencies.forEach((currencyName) => (
+      renderWithRouterAndRedux(<CurrencyOptionCard
+        key={ currencyName }
+        value={ currencyName }
+        name={ currencyName }
+      />)
+    ));
+
+    const currencyInput = screen.getByTestId('currency-input');
+
+    userEvent.type(currencyInput, 'USD');
+
+  });
 });

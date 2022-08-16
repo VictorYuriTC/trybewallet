@@ -39,10 +39,9 @@ class ExpenseTableRowCard extends Component {
 
     const valueConvertedToBRL = (Number(ask) * Number(value)).toFixed(2);
     const valueAfterDeletion = Number(totalValueInBRL) - valueConvertedToBRL;
-    const totalValue = () => (valueAfterDeletion < 0 ? 0.00 : valueAfterDeletion);
 
     dispatchRemovedIdToState(id);
-    dispatchTotalValueInBRL(totalValue());
+    dispatchTotalValueInBRL(valueAfterDeletion);
   }
 
   onClickEditExpense = () => {

@@ -35,13 +35,10 @@ class WalletForm extends Component {
   onInputChange = ({ target }) => {
     const {
       name,
-      type,
       value,
     } = target;
 
-    if (type !== 'checkbox') {
-      this.setState({ [name]: value });
-    }
+    this.setState({ [name]: value });
   }
 
   convertArrayOfCurrenciesToBRL = () => {
@@ -137,6 +134,7 @@ class WalletForm extends Component {
                 <CurrencyOptionCard
                   key={ currencyName }
                   currencyName={ currencyName }
+                  name={ currencyName }
                   value={ currencyName }
                 />
               )

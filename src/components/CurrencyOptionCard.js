@@ -5,6 +5,7 @@ class CurrencyOptionCard extends React.Component {
   render() {
     const {
       currencyName,
+      name,
       value,
     } = this.props;
 
@@ -12,6 +13,7 @@ class CurrencyOptionCard extends React.Component {
       <option
         key={ currencyName }
         value={ value }
+        name={ name }
       >
         { currencyName }
       </option>
@@ -21,6 +23,7 @@ class CurrencyOptionCard extends React.Component {
 
 CurrencyOptionCard.propTypes = {
   currencyName: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
 };
 

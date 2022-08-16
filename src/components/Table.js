@@ -7,13 +7,6 @@ class Table extends Component {
   render() {
     const { expenses } = this.props;
 
-    const renderTableRowCard = expenses.map((expense) => (
-      <ExpenseTableRowCard
-        key={ expense.id }
-        expense={ expense }
-      />
-    ));
-
     return (
       <div>
         <table>
@@ -49,7 +42,12 @@ class Table extends Component {
             </tr>
           </thead>
           <tbody>
-            { renderTableRowCard }
+            { expenses.map((expense) => (
+              <ExpenseTableRowCard
+                key={ expense.id }
+                expense={ expense }
+              />
+            )) }
           </tbody>
         </table>
       </div>
